@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}.
+{% block title %}Create Quiz{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white shadow rounded-lg p-6">
+    <h1 class="text-2xl font-bold mb-6">Create a Quiz</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <!-- Quiz fields -->
+        <div class="mb-6">
+            {{ quiz_form.non_field_errors }}
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                <!-- Add Tailwind classes to the widget -->
+                {{ quiz_form.title|add_class:"w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" }}
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                {{ quiz_form.description|add_class:"w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" }}
+            </div>
+        </div>
+
+        <!-- Questions -->
+        <h2 class="text-xl font-semibold mb-4">Questions</h2>
+        {{ question_formset.management_form }}
+        <div id="questions" class="space-y-6">
+            {% for q_form in question_formset.forms %}
+            <div class="border rounded p-4" data-question-index="{{ forloop.counter0 }}">
+                <div class="mb-3">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Question {{ forloop.counter }}</label>
+                    {{ q_form.text|add_class:"w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" }}
+                </div>
+
+                <h3 class="text-sm font-semibold mb-2">Choices</h3>
+                <div class="space-y-2" data-choices-container>
+                    <!-- Initial two choices -->
+                    <div class="flex gap-2 items-center choice-row">
+                        <input type="text" name="c-{{ forloop.counter0 }}-0-text" placeholder="Answer text"
+                               class="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <label class="flex items-center gap-1 text-xs">
+                            <input type="checkbox" name="c-{{ forloop.counter0 }}-0-is_correct"
+                                   class="h-4 w-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500">
+                            Correct
+                        </label>
+                    </div>
+                    <div class="flex gap-2 items-center choice-row">
+                        <input type="text" name="c-{{ forloop.counter0 }}-1-text" placeholder="Answer text"
+                               class="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                        <label class="flex items-center gap-1 text-xs">
+                            <input type="checkbox" name="c-{{ forloop.counter0 }}-1-is_correct"
+                                   class="h-4 w-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500">
+                            Correct
+                        </label>
+                    </div>
+                </div>
+                <button type="button"
+                        class="mt-3 text-indigo-600 text-sm hover:text-indigo-700"
+                        data-add-choice>
+                    + Add choice
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <button type="button"
+                id="add-question"
+                class="mt-4 mb-6 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium px-3 py-2 rounded">
+            + Add question
+        </button>
+
+        <button type="submit"
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded">
+            Save Quiz
+        </button>
+    </form>
+</div>
+
+<script>
+(function() {
+    const questionsContainer = document.getElementById('questions');
+    const addQuestionBtn = document.getElementById('add-question');
+    let qTotalInput = document.querySelector('[name="q-TOTAL_FORMS"]');
+
+    function updateManagementForms() {
+        qTotalInput.value = questionsContainer.querySelectorAll('[data-question-index]').length;
+    }
+
+    addQuestionBtn.addEventListener('click', () => {
+        const index = questionsContainer.querySelectorAll('[data-question-index]').length;
+        const div = document.createElement('div');
+        div.className = 'border rounded p-4';
+        div.setAttribute('data-question-index', index);
+        div.innerHTML = `
+            <div class="mb-3">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Question ${index + 1}</label>
+                <input type="text" name="q-${index}-text"
+                       class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                       placeholder="Question text">
+            </div>
+            <h3 class="text-sm font-semibold mb-2">Choices</h3>
+            <div class="space-y-2" data-choices-container>
+                <div class="flex gap-2 items-center choice-row">
+                    <input type="text" name="c-${index}-0-text" placeholder="Answer text"
+                           class="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <label class="flex items-center gap-1 text-xs">
+                        <input type="checkbox" name="c-${index}-0-is_correct"
+                               class="h-4 w-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"> Correct
+                    </label>
+                </div>
+                <div class="flex gap-2 items-center choice-row">
+                    <input type="text" name="c-${index}-1-text" placeholder="Answer text"
+                           class="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <label class="flex items-center gap-1 text-xs">
+                        <input type="checkbox" name="c-${index}-1-is_correct"
+                               class="h-4 w-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"> Correct
+                    </label>
+                </div>
+            </div>
+            <button type="button"
+                    class="mt-3 text-indigo-600 text-sm hover:text-indigo-700"
+                    data-add-choice>
+                + Add choice
+            </button>
+        `;
+        questionsContainer.appendChild(div);
+        updateManagementForms();
+    });
+
+    questionsContainer.addEventListener('click', (e) => {
+        if (e.target.matches('[data-add-choice]')) {
+            const questionBlock = e.target.closest('[data-question-index]');
+            const qIndex = questionBlock.getAttribute('data-question-index');
+            const choicesContainer = questionBlock.querySelector('[data-choices-container]');
+            const existing = choicesContainer.querySelectorAll('.choice-row').length;
+            const row = document.createElement('div');
+            row.className = 'flex gap-2 items-center choice-row';
+            row.innerHTML = `
+                <input type="text" name="c-${qIndex}-${existing}-text" placeholder="Answer text"
+                       class="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                <label class="flex items-center gap-1 text-xs">
+                    <input type="checkbox" name="c-${qIndex}-${existing}-is_correct"
+                           class="h-4 w-4 text-indigo-600 rounded border-gray-300 focus:ring-indigo-500"> Correct
+                </label>
+            `;
+            choicesContainer.appendChild(row);
+        }
+    });
+})();
+</script>
+{% endblock %}

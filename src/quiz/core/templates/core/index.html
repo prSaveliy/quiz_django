@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Quiz App{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="text-center mb-12">
+        <h1 class="text-5xl font-bold text-gray-900 mb-4">
+            Welcome to Quiz App
+        </h1>
+        <p class="text-xl text-gray-600 mb-8">
+            Create, manage, and take quizzes of your own design
+        </p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8 mb-12">
+        <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+            <div class="text-indigo-600 text-4xl mb-4">
+                ✏️
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                Create Quizzes
+            </h3>
+            <p class="text-gray-600">
+                Design custom quizzes with multiple question types and difficulty levels tailored to your needs.
+            </p>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+            <div class="text-indigo-600 text-4xl mb-4">
+                📊
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                Manage Content
+            </h3>
+            <p class="text-gray-600">
+                Edit, update, and organize your quizzes effortlessly. Keep your content fresh and relevant.
+            </p>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition">
+            <div class="text-indigo-600 text-4xl mb-4">
+                🎯
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                Take Quizzes
+            </h3>
+            <p class="text-gray-600">
+                Test your knowledge by taking quizzes created by you or others. Track your progress and scores.
+            </p>
+        </div>
+    </div>
+
+    <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg shadow-xl p-8 text-center text-white">
+        <h2 class="text-3xl font-bold mb-4">
+            Ready to Get Started?
+        </h2>
+        <p class="text-lg mb-6 opacity-90">
+            Join our community and start creating engaging quizzes today!
+        </p>
+        <div class="flex justify-center gap-4">
+            {% if user.is_authenticated %}
+                <a href="{% url 'core:quiz_list' %}" 
+                   class="bg-white text-indigo-600 font-semibold px-8 py-3 rounded-lg hover:bg-gray-100 transition duration-200">
+                    Browse Quizzes
+                </a>
+                <a href="{% url 'core:quiz_create' %}" 
+                   class="bg-white text-indigo-600 font-semibold px-8 py-3 rounded-lg hover:bg-gray-100 transition duration-200">
+                    Create Quiz
+                </a>
+                <a href="{% url 'core:user_quizzes' %}" 
+                   class="bg-white text-indigo-600 font-semibold px-8 py-3 rounded-lg hover:bg-gray-100 transition duration-200">
+                    My Quizzes
+                </a>
+                <a href="{% url 'core:user_quizzes_results' %}" 
+                   class="bg-white text-indigo-600 font-semibold px-8 py-3 rounded-lg hover:bg-gray-100 transition duration-200">
+                    My Results
+                </a>
+            {% else %}
+                <a href="{% url 'users:register' %}" 
+                   class="bg-white text-indigo-600 font-semibold px-8 py-3 rounded-lg hover:bg-gray-100 transition duration-200">
+                    Sign Up Now
+                </a>
+                <a href="{% url 'users:login' %}" 
+                   class="bg-indigo-700 text-white font-semibold px-8 py-3 rounded-lg hover:bg-indigo-800 transition duration-200">
+                    Login
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-16">
+        <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">
+            How It Works
+        </h2>
+        <div class="space-y-6">
+            <div class="flex items-start gap-4">
+                <div class="flex-shrink-0 w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold">
+                    1
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-1">Sign Up & Login</h4>
+                    <p class="text-gray-600">Create your account to access all features.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-4">
+                <div class="flex-shrink-0 w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold">
+                    2
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-1">Create</h4>
+                    <p class="text-gray-600">Create your quiz.</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-4">
+                <div class="flex-shrink-0 w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold">
+                    3
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-1">Play Quizzes</h4>
+                    <p class="text-gray-600">Test your knowledge with quizzes created by others.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

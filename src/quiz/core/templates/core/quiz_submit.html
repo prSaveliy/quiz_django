@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Results - {{ quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white rounded-lg shadow-md p-8 text-center">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Quiz Submitted</h1>
+        <p class="text-gray-600 mb-6">{{ quiz.title }}</p>
+
+        <div class="bg-indigo-50 rounded-lg p-6 mb-6">
+            <div class="text-5xl font-bold text-indigo-600 mb-2">
+                {{ score|floatformat:0 }}%
+            </div>
+            <p class="text-gray-700 text-lg">
+                {{ correct_answers }} out of {{ total_questions }} correct
+            </p>
+        </div>
+
+        <div class="flex gap-4 justify-center">
+            <a href="{% url 'core:quiz_detail' quiz.id %}"
+               class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-lg transition">
+                Retake Quiz
+            </a>
+            <a href="{% url 'core:quiz_list' %}"
+               class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-6 py-3 rounded-lg transition">
+                Back to Quizzes
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
